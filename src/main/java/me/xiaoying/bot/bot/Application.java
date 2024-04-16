@@ -1,5 +1,6 @@
 package me.xiaoying.bot.bot;
 
+import me.xiaoying.bot.bot.command.LoginCommand;
 import me.xiaoying.bot.bot.listener.LoggerListener;
 import me.xiaoying.bot.bot.scheduler.Scheduler;
 import me.xiaoying.bot.bot.terminal.Terminal;
@@ -43,9 +44,11 @@ public class Application {
         // 加载插件
         logger.info("Loading plugins...");
         File plugins = new File("./plugins");
-
         if (!plugins.exists()) plugins.mkdirs();
         server.getPluginManager().loadPlugins(new File("./plugins"));
+
+        // 注册命令
+        server.getCommandManager().registerCommand("xiaoyingbot", new LoginCommand("login"));
 
         Xyb.setServer(server);
     }
