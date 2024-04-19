@@ -65,7 +65,6 @@ public class LoginCommand extends Command {
             password = strings[2];
 
         Bot bot;
-
         if (protocol == BotConfiguration.MiraiProtocol.ANDROID_WATCH)
             bot = BotFactory.INSTANCE.newBot(account, BotAuthorization.byQRCode());
         else
@@ -76,21 +75,16 @@ public class LoginCommand extends Command {
         bot.getConfiguration().setLoginSolver(new LoginSolver());
 
         // 取消日志
-        bot.getConfiguration().noBotLog();
         bot.getConfiguration().noNetworkLog();
-
+        bot.getConfiguration().noBotLog();
         // 列表缓存
         bot.getConfiguration().enableContactCache();
-
         // 协议选择
-
         bot.getConfiguration().setProtocol(protocol);
-
         // 设置https协议，已解决SSl peer shut down incorrectly异常
         System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2,SSLv3");
 
         bot.login();
-
         Application.getScheduler().scheduleAsyncDelayedTask(null, bot::join);
     }
 }

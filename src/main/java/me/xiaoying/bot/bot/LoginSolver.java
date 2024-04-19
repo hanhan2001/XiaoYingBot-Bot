@@ -1,6 +1,7 @@
 package me.xiaoying.bot.bot;
 
 import kotlin.coroutines.Continuation;
+import me.xiaoying.bot.core.Xyb;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.auth.QRCodeLoginListener;
 import net.mamoe.mirai.utils.DeviceVerificationRequests;
@@ -55,7 +56,7 @@ public class LoginSolver extends net.mamoe.mirai.utils.LoginSolver implements QR
         return new QRCodeLoginListener() {
             @Override
             public void onStateChanged(@NotNull Bot bot, @NotNull QRCodeLoginListener.State state) {
-                System.out.println(1234);
+                Xyb.getLogger().info("账号: &e{} &f当前状态: &e{}", String.valueOf(bot.getId()), state.toString());
             }
 
             @Override
@@ -85,7 +86,6 @@ public class LoginSolver extends net.mamoe.mirai.utils.LoginSolver implements QR
     @Nullable
     @Override
     public Object onSolveDeviceVerification(@NotNull Bot bot, @NotNull DeviceVerificationRequests requests, @NotNull Continuation<? super DeviceVerificationResult> $completion) {
-        System.out.println(124890128);
         DeviceVerificationRequests.FallbackRequest fallback = requests.getFallback();
         String url = fallback.getUrl();//HTTP URL. 可能需要在 QQ 浏览器中打开并人工操作.
         System.out.println(url);
