@@ -29,16 +29,50 @@ public class LoginSolver extends net.mamoe.mirai.utils.LoginSolver implements QR
 
     }
 
+    @Override
+    public int getQrCodeEcLevel() {
+        return QRCodeLoginListener.super.getQrCodeEcLevel();
+    }
+
+    @Override
+    public int getQrCodeMargin() {
+        return QRCodeLoginListener.super.getQrCodeMargin();
+    }
+
+    @Override
+    public int getQrCodeSize() {
+        return QRCodeLoginListener.super.getQrCodeSize();
+    }
+
+    @Override
+    public long getQrCodeStateUpdateInterval() {
+        return QRCodeLoginListener.super.getQrCodeStateUpdateInterval();
+    }
+
+    @NotNull
+    @Override
+    public QRCodeLoginListener createQRCodeLoginListener(@NotNull Bot bot) {
+        return new QRCodeLoginListener() {
+            @Override
+            public void onStateChanged(@NotNull Bot bot, @NotNull QRCodeLoginListener.State state) {
+                System.out.println(1234);
+            }
+
+            @Override
+            public void onFetchQRCode(@NotNull Bot bot, @NotNull byte[] bytes) {
+                try {
+                    OutputStream outputStream = Files.newOutputStream(Paths.get("C:/Users/Administrator/Desktop/123.png"));
+                    outputStream.write(bytes, 0, bytes.length);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+    }
+
     @Nullable
     @Override
     public Object onSolvePicCaptcha(@NotNull Bot bot, @NotNull byte[] bytes, @NotNull Continuation<? super String> continuation) {
-        try {
-            OutputStream outputStream = Files.newOutputStream(Paths.get("C:/Users/Administrator/Desktop/123.png"));
-            outputStream.write(bytes, 0, bytes.length);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         return null;
     }
 
