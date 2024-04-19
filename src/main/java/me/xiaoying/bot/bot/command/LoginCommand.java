@@ -8,6 +8,7 @@ import me.xiaoying.bot.core.command.Command;
 import me.xiaoying.bot.core.command.CommandSender;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactory;
+import net.mamoe.mirai.auth.BotAuthorization;
 import net.mamoe.mirai.utils.BotConfiguration;
 
 /**
@@ -30,15 +31,45 @@ public class LoginCommand extends Command {
         }
 
         long account;
-        String password;
-        if (!LongUtil.isLong(strings[0])) {
+        String password = null;
+        if (!LongUtil.isLong(strings[1])) {
             Xyb.getLogger().info(this.getUsage());
             return;
         }
-        account = Long.parseLong(strings[0]);
-        password = strings[1];
 
-        Bot bot = BotFactory.INSTANCE.newBot(account, password);
+        BotConfiguration.MiraiProtocol protocol = BotConfiguration.MiraiProtocol.ANDROID_PAD;
+        switch (strings[0].toUpperCase()) {
+            case "ANDROID_PHONE": {
+                protocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE;
+                break;
+            }
+            case "ANDROID_PAD": {
+                protocol = BotConfiguration.MiraiProtocol.ANDROID_PAD;
+                break;
+            }
+            case "ANDROID_WATCH": {
+                protocol = BotConfiguration.MiraiProtocol.ANDROID_WATCH;
+                break;
+            }
+            case "IPAD": {
+                protocol = BotConfiguration.MiraiProtocol.IPAD;
+                break;
+            }
+            case "MACOS": {
+                protocol = BotConfiguration.MiraiProtocol.MACOS;
+                break;
+            }
+        }
+        account = Long.parseLong(strings[1]);
+        if (strings.length == 3)
+            password = strings[2];
+
+        Bot bot;
+
+        if (protocol == BotConfiguration.MiraiProtocol.ANDROID_WATCH)
+            bot = BotFactory.INSTANCE.newBot(account, BotAuthorization.byQRCode());
+        else
+            bot = BotFactory.INSTANCE.newBot(account, password);
 
         // 设备信息存储位置
         bot.getConfiguration().fileBasedDeviceInfo("./devices.json");
@@ -52,31 +83,7 @@ public class LoginCommand extends Command {
         bot.getConfiguration().enableContactCache();
 
         // 协议选择
-        BotConfiguration.MiraiProtocol protocol = BotConfiguration.MiraiProtocol.ANDROID_PAD;
-        if (strings.length == 3) {
-            switch (strings[2].toUpperCase()) {
-                case "ANDROID_PHONE": {
-                    protocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE;
-                    break;
-                }
-                case "ANDROID_PAD": {
-                    protocol = BotConfiguration.MiraiProtocol.ANDROID_PAD;
-                    break;
-                }
-                case "ANDROID_WATCH": {
-                    protocol = BotConfiguration.MiraiProtocol.ANDROID_WATCH;
-                    break;
-                }
-                case "IPAD": {
-                    protocol = BotConfiguration.MiraiProtocol.IPAD;
-                    break;
-                }
-                case "MACOS": {
-                    protocol = BotConfiguration.MiraiProtocol.MACOS;
-                    break;
-                }
-            }
-        }
+
         bot.getConfiguration().setProtocol(protocol);
 
         // 设置https协议，已解决SSl peer shut down incorrectly异常
